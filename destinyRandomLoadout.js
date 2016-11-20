@@ -26,34 +26,11 @@ function filterTypes(gear) {
   return armory;
 }
 
-
-
 function getArmory() {
-  var gear = document.getElementsByClassName('gear-item');
+  var gear = document.getElementsByClassName('gear-item');;
   var armory = filterTypes(gear);
   return armory;
-  // var primary = getRandom(armory.primary);
-  // var special = getRandom(armory.special);
-  // var heavy = getRandom(armory.heavy);
-  // console.log(
-  //   primary.getAttribute('data-itemname'),
-  //   primary.getAttribute('data-perks')
-  // );
-  // console.log("--------");
-  // console.log(
-  //   special.getAttribute('data-itemname'),
-  //   special.getAttribute('data-perks')
-  // );
-  // console.log("--------");
-  // console.log(
-  //   heavy.getAttribute('data-itemname'),
-  //   heavy.getAttribute('data-perks')
-  // );
-  // console.log("--------");
 }
-
-
-// chrome.runtime.sendMessage(getArmory());
 
 chrome.runtime.onMessage.addListener(function(request) {
   if (request.get === "armory") {

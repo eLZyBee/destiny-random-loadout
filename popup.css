@@ -50,6 +50,12 @@ button:hover {
   background: rgb(89, 95, 134);
 }
 
+button:active {
+  cursor: pointer;
+  transition: 0.1s ease-in-out;
+  background: rgb(135, 146, 223);
+}
+
 .gear-present {
   display: block;
   position: absolute;

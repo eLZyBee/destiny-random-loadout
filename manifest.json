@@ -15,5 +15,5 @@
     "default_icon" : "DRL_icon_128.png",
     "default_popup": "popup.html"
   },
-  "permissions" : ["tabs"]
+  "permissions" : ["tabs", "storage"]
 }
