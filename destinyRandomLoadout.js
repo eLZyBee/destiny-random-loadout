@@ -55,7 +55,7 @@ function getArmory() {
 
 // chrome.runtime.sendMessage(getArmory());
 
-chrome.runtime.onMessage.addListener(function(request, _, sendResponse) {
+chrome.runtime.onMessage.addListener(function(request) {
   if (request.get === "armory") {
     chrome.runtime.sendMessage(getArmory());
   }

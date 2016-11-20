@@ -49,16 +49,13 @@ document.addEventListener("DOMContentLoaded", function() {
     chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
       chrome.tabs.sendMessage(tabs[0].id, {get: "armory"});
     });
+    special.children[1].innerHTML = "No gear found. Try refreshing the page.";
   });
 
   button.addEventListener('click', function(e) {
     e.preventDefault();
-    if (ARMORY) {
-      var gear = createLoadout();
-      updateLoadout(gear);
-    } else {
-      special.children[1].innerHTML = "No gear found. Try refreshing the page."
-    }
+    var gear = createLoadout();
+    updateLoadout(gear);
   });
 
   chrome.runtime.onMessage.addListener(function(request) {
