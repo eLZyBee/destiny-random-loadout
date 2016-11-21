@@ -40,23 +40,105 @@ function fillSearch(text) {
   searchBox.dispatchEvent(e);
 }
 
-function move(itemhash, char) {
-  var item = document.querySelector("[data-itemhash=\"" + itemhash + "\"]");
-  console.log(item);
+function determineSpace() {
+  var space = {};
+  var vaultSlots = document.querySelectorAll(
+    '[class~="vaulted"][data-itemtypeid="Weapon"]'
+  ).length + document.querySelectorAll(
+    '[class~="vaulted"][data-itemtype="Primary Weapon Engram"]'
+  ).length + document.querySelectorAll(
+    '[class~="vaulted"][data-itemtype="Special Weapon Engram"]'
+  ).length + document.querySelectorAll(
+    '[class~="vaulted"][data-itemtype="Heavy Weapon Engram"]'
+  ).length;
+
+  space["Vault"] = 108 - vaultSlots;
+
+  var types = ["primary", "special", "heavy"];
+  var buckets = [
+    "BUCKET_PRIMARY_WEAPON",
+    "BUCKET_SPECIAL_WEAPON",
+    "BUCKET_HEAVY_WEAPON"
+  ];
+  space["Warlock"] = {
+    primary: [], special: [], heavy: []
+  };
+  space["Titan"] = {
+    primary: [], special: [], heavy: []
+  };
+  space["Hunter"] = {
+    primary: [], special: [], heavy: []
+  };
+
+  for (var i = 0; i < buckets.length; i++) {
+    var weaponsList = document.querySelectorAll(
+      '[data-containerbucketid="' + buckets[i] + '"]'
+    )
+    var weapons = [];
+    for (var k = 0; k < weaponsList.length; k++) {
+      weapons.push({
+        site: weaponsList[k].getElementsByClassName('unequipped-message')[0],
+        id: weaponsList[k].getAttribute('data-itemhash')
+      });
+    }
+
+    for (var j = 0; j < weapons.length; j++) {
+      if (weapons[j].site.innerHTML.indexOf("Warlock") !== -1) {
+        space["Warlock"][types[i]].push(weapons[j].id);
+      } else if (weapons[j].site.innerHTML.indexOf("Titan") !== -1) {
+        space["Titan"][types[i]].push(weapons[j].id);
+      } else if (weapons[j].site.innerHTML.indexOf("Hunter") !== -1) {
+        space["Hunter"][types[i]].push(weapons[j].id);
+      }
+    }
+  }
+
+  return space;
+}
+
+function makeSpace(itemhash, location) {
+  var space = determineSpace();
+  var item = document.querySelector(
+    "[class~=\"gear-item\"][data-itemhash=\"" + itemhash + "\"]"
+  );
+  var slot = item.getAttribute(
+    'data-containerbucketid').split("_")[1].toLowerCase();
+  var classes = ["Warlock", "Hunter", "Titan"];
+
+  if (space[location][slot].length === 10) {
+    var mostSpace = "Vault";
+    var available = space["Vault"];
+
+    for (var i = 0; i < classes.length; i++) {
+      if((10 - space[classes[i]][slot].length) >= available) {
+        mostSpace = classes[i];
+        available = 10 - space[classes[i]][slot].length;
+      }
+    }
+
+    var hashArr = space[location][slot];
+    move(hashArr[hashArr.length-1], mostSpace);
+  }
+}
+
+function move(itemhash, location) {
+  var item = document.querySelector(
+    "[class~=\"gear-item\"][data-itemhash=\"" + itemhash + "\"]"
+  );
   item.click();
 
   var opts = document.getElementsByClassName("menu-transfer");
-  // Infinite loop, got to click item again to bring this up??
-  // while (opts.length === 0) {
-  //   opts = document.getElementsByClassName("menu-transfer");
-  // }
-  console.log(opts);
   for (var i = 0; i < opts.length; i++) {
     var opt = opts[i].children[0].innerHTML;
-    if (opt.indexOf(char) !== -1) {
+    if (opt.indexOf(location) !== -1) {
       opts[i].click();
     }
   }
+}
+
+function handleMove(itemhash, location) {
+  makeSpace(itemhash, location);
+  move(itemhash, location);
 }
 
 chrome.runtime.onMessage.addListener(function(request) {
@@ -65,7 +147,6 @@ chrome.runtime.onMessage.addListener(function(request) {
   } else if (request.get === "search") {
     fillSearch(request.search);
   } else if (request.get === "move") {
-    console.log(request);
-    move(request.item, request.char);
+    handleMove(request.item, request.char);
   }
 });
