@@ -1,4 +1,5 @@
 var ARMORY;
+var CLASS = "Warlock";
 
 function getRandom(array) {
   return array[Math.floor(Math.random() * array.length)];
@@ -29,15 +30,13 @@ function createLoadout() {
 
 document.addEventListener("DOMContentLoaded", function() {
 
-  var button = document.getElementsByClassName("randomize")[0];
-  var getButton = document.getElementsByClassName("get")[0];
+  var button = document.getElementsByClassName("get")[0];
   var primary = document.getElementsByClassName("primary")[0];
   var pPerk = document.getElementsByClassName("primary-perks")[0];
   var special = document.getElementsByClassName("special")[0];
   var sPerk = document.getElementsByClassName("special-perks")[0];
   var heavy = document.getElementsByClassName("heavy")[0];
   var hPerk = document.getElementsByClassName("heavy-perks")[0];
-  var present = document.getElementsByClassName("gear-present")[0];
 
   // pull from storage and if present, updateLoadout with present data.
   var loadout;
@@ -46,11 +45,61 @@ document.addEventListener("DOMContentLoaded", function() {
     updateLoadout(loadout);
   });
 
+  // CLEAN UP (for sanity)
   function updateLoadout(guns) {
+    removeNodes(document.getElementsByClassName("search"));
+    removeNodes(document.getElementsByClassName("move"));
+
+    var primButton = document.createElement("button");
+    primButton.className = "search";
+    primButton.style.position = "static";
+    primButton.innerHTML = "Search for " + guns.primary.p;
+    primary.appendChild(primButton);
+    addSearchListener(primButton, guns.primary.p);
+
+    var primMove = document.createElement("button");
+    primMove.className = "move";
+    primMove.style.position = "static";
+    primMove.innerHTML = "Move: " + guns.primary.p;
+    primary.appendChild(primMove);
+    addMoveListener(primMove, guns.primary.ph);
+
     primary.children[0].innerHTML = "PRIMARY: " + guns.primary.p;
     primary.children[1].innerHTML = "PERKS: " + guns.primary.pp;
+
+
+    var specButton = document.createElement("button");
+    specButton.className = "search";
+    specButton.style.position = "static";
+    specButton.innerHTML = "Search for " + guns.special.s;
+    special.appendChild(specButton);
+    addSearchListener(specButton, guns.special.s);
+
+    var specMove = document.createElement("button");
+    specMove.className = "move";
+    specMove.style.position = "static";
+    specMove.innerHTML = "Move: " + guns.special.s;
+    special.appendChild(specMove);
+    addMoveListener(specMove, guns.special.sh);
+
     special.children[0].innerHTML = "SPECIAL: " + guns.special.s;
     special.children[1].innerHTML = "PERKS: " + guns.special.sp;
+
+
+    var heavyButton = document.createElement("button");
+    heavyButton.className = "search";
+    heavyButton.style.position = "static";
+    heavyButton.innerHTML = "Search for " + guns.heavy.h;
+    heavy.appendChild(heavyButton);
+    addSearchListener(heavyButton, guns.heavy.h);
+
+    var heavyMove = document.createElement("button");
+    heavyMove.className = "move";
+    heavyMove.style.position = "static";
+    heavyMove.innerHTML = "Move: " + guns.heavy.h;
+    heavy.appendChild(heavyMove);
+    addMoveListener(heavyMove, guns.heavy.hh);
+
     heavy.children[0].innerHTML = "HEAVY: " + guns.heavy.h;
     heavy.children[1].innerHTML = "PERKS: " + guns.heavy.hp;
   }
@@ -64,27 +113,59 @@ document.addEventListener("DOMContentLoaded", function() {
     heavy.children[1].innerHTML = "";
   }
 
-  getButton.addEventListener('click', function(e) {
-    e.preventDefault();
-    chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
-      if (tabs[0].url.indexOf("bungie.net/en/Gear/Manager") !== -1) {
-        chrome.tabs.sendMessage(tabs[0].id, {get: "armory"});
-      } else {
-        invalidTab();
-      }
+  function addSearchListener(node, name) {
+    node.addEventListener('click', function(e) {
+      e.preventDefault();
+
+      chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+        chrome.tabs.sendMessage(tabs[0].id, {get: "search", search: name});
+      });
+
     });
-  });
+  }
+
+  function addMoveListener(node, hash) {
+    node.addEventListener('click', function(e) {
+      e.preventDefault();
+
+      chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+        chrome.tabs.sendMessage(tabs[0].id, {
+          get: "move", item: hash, char: CLASS
+        });
+      });
+    });
+  }
+
+  function removeNodes(array) {
+    for (var i = array.length - 1; i >= 0; i--) {
+      array[i].remove();
+    }
+  }
 
   button.addEventListener('click', function(e) {
     e.preventDefault();
-    var gear = createLoadout();
-    updateLoadout(gear);
+
+    if (ARMORY === undefined) {
+
+      chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+        if (tabs[0].url.indexOf("bungie.net/en/Gear/Manager") !== -1) {
+          chrome.tabs.sendMessage(tabs[0].id, {get: "armory"});
+        } else {
+          invalidTab();
+        }
+      });
+
+    } else {
+      var gear = createLoadout();
+      updateLoadout(gear);
+    }
   });
 
   chrome.runtime.onMessage.addListener(function(request) {
-    console.log(request);
     if (request.hasOwnProperty("heavy")) {
       ARMORY = request;
+      button.className = "button randomize";
+      button.innerHTML = "Randomize";
       present.style.background = "rgb(20, 99, 31)";
     }
   });

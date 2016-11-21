@@ -26,34 +26,62 @@ p {
 }
 
 .get {
-  left: 60px;
+  background: rgb(89, 27, 27);
+}
+
+.get:hover {
+  background: rgb(161, 48, 48);
 }
 
 .randomize {
-  right: 60px;
+  background: rgb(22, 69, 23);
+}
+
+.randomize:hover {
+  background: rgb(28, 107, 29);
+}
+
+.search {
+  width: auto;
+  margin: 5px 0 0 30px;
+  background: rgb(50, 50, 50);
+}
+
+.search:hover {
+  background: rgb(50, 55, 73);
+}
+
+.move {
+  width: auto;
+  margin: 5px 0 0 30px;
+  background: rgb(50, 50, 50);
+}
+
+.move:hover {
+  background: rgb(50, 55, 75);
 }
 
 button {
   position: absolute;
+  left: 150px;
   width: 100px;
   bottom: 20px;
-  outline: 0;
   padding: 10px 20px;
   transition: 0.3s ease-in-out;
-  background: rgb(58, 62, 88);
+  outline: 0;
   color: rgb(194, 194, 194);
 }
 
 button:hover {
   cursor: pointer;
   transition: 0.3s ease-in-out;
-  background: rgb(89, 95, 134);
 }
 
 button:active {
   cursor: pointer;
   transition: 0.1s ease-in-out;
-  background: rgb(135, 146, 223);
+  background: rgb(255, 255, 255);
+  color: rgb(0, 0, 0);
 }
 
 .gear-present {
