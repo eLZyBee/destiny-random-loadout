@@ -60,7 +60,7 @@ document.addEventListener("DOMContentLoaded", function() {
     var primMove = document.createElement("button");
     primMove.className = "move";
     primMove.style.position = "static";
-    primMove.innerHTML = "Move: " + guns.primary.p;
+    primMove.innerHTML = "Equip: " + guns.primary.p;
     primary.appendChild(primMove);
     addMoveListener(primMove, guns.primary.ph);
 
@@ -78,7 +78,7 @@ document.addEventListener("DOMContentLoaded", function() {
     var specMove = document.createElement("button");
     specMove.className = "move";
     specMove.style.position = "static";
-    specMove.innerHTML = "Move: " + guns.special.s;
+    specMove.innerHTML = "Equip: " + guns.special.s;
     special.appendChild(specMove);
     addMoveListener(specMove, guns.special.sh);
 
@@ -96,7 +96,7 @@ document.addEventListener("DOMContentLoaded", function() {
     var heavyMove = document.createElement("button");
     heavyMove.className = "move";
     heavyMove.style.position = "static";
-    heavyMove.innerHTML = "Move: " + guns.heavy.h;
+    heavyMove.innerHTML = "Equip: " + guns.heavy.h;
     heavy.appendChild(heavyMove);
     addMoveListener(heavyMove, guns.heavy.hh);
 

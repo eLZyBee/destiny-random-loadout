@@ -136,9 +136,19 @@ function move(itemhash, location) {
   }
 }
 
+function equip(itemhash, location) {
+  var item = document.querySelector(
+    "[class~=\"gear-item\"][data-itemhash=\"" + itemhash + "\"]"
+  );
+  item.click();
+  var equip = document.getElementsByClassName("equip")[0];
+  equip.click();
+}
+
 function handleMove(itemhash, location) {
   makeSpace(itemhash, location);
   move(itemhash, location);
+  equip(itemhash, location);
 }
 
 chrome.runtime.onMessage.addListener(function(request) {
