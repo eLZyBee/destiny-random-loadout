@@ -33,6 +33,13 @@ function getArmory() {
   return armory;
 }
 
+function getActiveClass() {
+  var classes = { 0: "Titan", 1: "Hunter", 2: "Warlock" };
+  return classes[
+    document.getElementsByClassName('current')[0].getAttribute('data-classtype')
+  ];
+}
+
 function fillSearch(text) {
   var searchBox = document.getElementById("gear-manager-search").children[0];
   var e = new Event('change');
@@ -117,7 +124,7 @@ function makeSpace(itemhash, location) {
     }
 
     var hashArr = space[location][slot];
-    move(hashArr[hashArr.length-1], mostSpace);
+    move(hashArr[hashArr.length-2], mostSpace);
   }
 }
 
@@ -148,7 +155,8 @@ function equip(itemhash, location) {
 function handleMove(itemhash, location) {
   makeSpace(itemhash, location);
   move(itemhash, location);
-  equip(itemhash, location);
+  // A bit too buggy right now!
+  // equip(itemhash, location);
 }
 
 chrome.runtime.onMessage.addListener(function(request) {
@@ -157,6 +165,6 @@ chrome.runtime.onMessage.addListener(function(request) {
   } else if (request.get === "search") {
     fillSearch(request.search);
   } else if (request.get === "move") {
-    handleMove(request.item, request.char);
+    handleMove(request.item, getActiveClass());
   }
 });

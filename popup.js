@@ -1,5 +1,4 @@
 var ARMORY;
-var CLASS = "Warlock";
 
 function getRandom(array) {
   return array[Math.floor(Math.random() * array.length)];
@@ -26,7 +25,6 @@ function createLoadout() {
   saveSelection(weapons);
   return weapons;
 }
-
 
 document.addEventListener("DOMContentLoaded", function() {
 
@@ -60,7 +58,7 @@ document.addEventListener("DOMContentLoaded", function() {
     var primMove = document.createElement("button");
     primMove.className = "move";
     primMove.style.position = "static";
-    primMove.innerHTML = "Equip: " + guns.primary.p;
+    primMove.innerHTML = "Move: " + guns.primary.p;
     primary.appendChild(primMove);
     addMoveListener(primMove, guns.primary.ph);
 
@@ -78,7 +76,7 @@ document.addEventListener("DOMContentLoaded", function() {
     var specMove = document.createElement("button");
     specMove.className = "move";
     specMove.style.position = "static";
-    specMove.innerHTML = "Equip: " + guns.special.s;
+    specMove.innerHTML = "Move: " + guns.special.s;
     special.appendChild(specMove);
     addMoveListener(specMove, guns.special.sh);
 
@@ -96,7 +94,7 @@ document.addEventListener("DOMContentLoaded", function() {
     var heavyMove = document.createElement("button");
     heavyMove.className = "move";
     heavyMove.style.position = "static";
-    heavyMove.innerHTML = "Equip: " + guns.heavy.h;
+    heavyMove.innerHTML = "Move: " + guns.heavy.h;
     heavy.appendChild(heavyMove);
     addMoveListener(heavyMove, guns.heavy.hh);
 
@@ -130,7 +128,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
       chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
         chrome.tabs.sendMessage(tabs[0].id, {
-          get: "move", item: hash, char: CLASS
+          get: "move", item: hash
         });
       });
     });
